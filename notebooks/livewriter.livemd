@@ -1,0 +1,115 @@
+# LiveWriter
+
+```elixir
+Mix.install(
+  [
+    {:livewriter, path: "/Users/andres/Documents/livewriter"}  
+  ],
+  config_path: "/Users/andres/Documents/livewriter/config/config.exs", force: true)
+```
+
+## Section
+
+```elixir
+import Livewriter
+
+livebook do
+  setup do
+    Mix.install([
+      {:ecto, "~> 3.11"}
+    ])
+  end
+  
+  section id: "section1" do
+    elixir do
+      a = 1
+      b = 2
+      c = a + b
+    end
+
+    elixir do
+      d = c * b * a
+    end
+  end
+
+  section name: "Forked", fork: "section1" do
+    elixir do
+      IO.puts("First Line")
+    end
+
+    markdown do
+      """
+      This is some markdown:
+
+      * You can see clearly now
+      """
+    end
+  end
+end
+|> print!()
+```
+
+```elixir
+defmodule Test do
+  @moduledoc """
+  This is a test module to talk about the LiveWriter tool suite
+  """
+
+  @doc cell: :elixir
+  @doc """
+  Adds a and b
+
+  iex> add(1,2)
+  3
+  """
+  def add(a, b) do
+    a + b
+  end
+
+  @doc """
+  Subtracts b from a
+
+  iex> sub(2,1)
+  1
+  iex> sub(3,4)
+  -1
+  """
+  @doc cell: :elixir, config: %{type: :code}
+  def sub(a, b) do
+    a - b
+  end
+end
+
+defmodule Test2 do
+  @moduledoc """
+  This is a test module to talk about the LiveWriter tool suite
+  """
+
+  @doc cell: :elixir
+  @doc """
+  Multiplies a and b
+
+  iex> mul(1,2)
+  2
+  """
+  def mul(a, b) do
+    a * b
+  end
+
+  @doc """
+  Divides a by b
+
+  iex> div(1,2)
+  3
+  """
+  @doc cell: :elixir, config: %{type: :code}
+  def div(a, b) do
+    a / b
+  end
+end
+```
+
+```elixir
+import Livewriter
+result = Livewriter.from_docs(Test) |> print!(include_outputs: true)
+```
